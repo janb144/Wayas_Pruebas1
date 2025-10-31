@@ -3,7 +3,7 @@ package com.wayas.app.controller;
 import com.wayas.app.model.Insumo;
 import com.wayas.app.model.Requerimiento;
 import com.wayas.app.service.InventarioService;
-import com.wayas.app.service.InsumoService;
+import com.wayas.app.service.insumoService;
 import com.wayas.app.service.ProveedorService; // Añadido para proveedores
 import com.wayas.app.service.RequerimientoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class InventarioController {
 
     @Autowired private InventarioService inventarioService;
     @Autowired private RequerimientoService reqService;
-    @Autowired private InsumoService insumoService;
+    @Autowired private insumoService insumoService;
     @Autowired private ProveedorService proveedorService; 
 
     @GetMapping("/ingresar/pendientes")

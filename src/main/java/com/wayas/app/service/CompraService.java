@@ -1,6 +1,7 @@
 package com.wayas.app.service;
 
 import com.wayas.app.model.Compra;
+import com.wayas.app.model.Insumo;
 import com.wayas.app.model.Proveedor;
 import com.wayas.app.model.Requerimiento;
 import com.wayas.app.repository.ICompraRepository;
@@ -20,6 +21,7 @@ public class CompraService {
     @Autowired private ICompraRepository repoCompra;
     @Autowired private RequerimientoService reqService; 
     @Autowired private IProveedorRepository repoProv;
+    @Autowired private insumoService insumoService;
 
     public List<Compra> listarTodas() {
         return repoCompra.findAll();
@@ -31,7 +33,9 @@ public class CompraService {
 
     @Transactional
     public Compra registrarCompra(Long idRequerimiento, LocalDate fechaCompra, Integer idProveedor,
-                                  BigDecimal montoTotal, String nroFactura, String detalleTexto) {
+                                  BigDecimal montoTotal, String nroFactura, String detalleTexto,
+                                  List<Integer> insumoIds, List<BigDecimal> cantidades) {
+
         Requerimiento req = reqService.obtenerPorId(idRequerimiento);
         Optional<Proveedor> provOpt = repoProv.findById(idProveedor);
 
@@ -39,9 +43,8 @@ public class CompraService {
             throw new IllegalArgumentException("Requerimiento o Proveedor no válido.");
         }
         if (!req.getEstado().equals("PENDIENTE") && !req.getEstado().equals("ENVIADO")) {
-             throw new IllegalStateException("Solo se pueden registrar compras de requerimientos PENDIENTES o ENVIADOS.");
+            throw new IllegalStateException("Solo se pueden registrar compras de requerimientos PENDIENTES o ENVIADOS.");
         }
-
 
         Compra compra = new Compra();
         compra.setRequerimiento(req);
@@ -51,8 +54,23 @@ public class CompraService {
         compra.setNroFactura(nroFactura);
         compra.setDetalleInsumosComprados(detalleTexto);
         compra.setEstado("REGISTRADA");
+
         long count = repoCompra.count();
         compra.setCodigoCompra(String.format("COMP-%d-%04d", LocalDate.now().getYear(), count + 1));
+
+        if (insumoIds != null && cantidades != null && insumoIds.size() == cantidades.size()) {
+            for (int i = 0; i < insumoIds.size(); i++) {
+                Integer idInsumo = insumoIds.get(i);
+                BigDecimal cantidad = cantidades.get(i);
+
+                Insumo insumo = insumoService.obtenerPorId(idInsumo);
+                compra.agregarDetalle(insumo, cantidad);
+
+                BigDecimal nuevoStock = insumo.getStockActual().add(cantidad);
+                insumo.setStockActual(nuevoStock);
+                insumoService.actualizar(insumo);
+            }
+        }
 
         reqService.actualizarEstado(idRequerimiento, "COMPRADO");
 

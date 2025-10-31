@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class InsumoService {
+public class insumoService {
     @Autowired private IInsumoRepository repoInsumo;
 
     public List<Insumo> listarTodos() { return repoInsumo.findAll(); }
@@ -15,5 +15,6 @@ public class InsumoService {
     public Insumo guardar(Insumo insumo) { return repoInsumo.save(insumo); }
     public Insumo obtenerPorId(Integer id) { return repoInsumo.findById(id).orElse(null); }
     public void eliminar(Integer id) { repoInsumo.deleteById(id); }
-    // ... (métodos para actualizar stock, etc.)
+
+    public void actualizar(Insumo insumo) { repoInsumo.save(insumo); } // ✅ nuevo método
 }

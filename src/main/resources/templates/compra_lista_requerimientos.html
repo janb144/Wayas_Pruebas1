@@ -45,7 +45,7 @@
                                 <td th:text="${ins.descripcion}"></td>
                                 <td th:text="${#numbers.formatDecimal(ins.stockActual, 1, 'COMMA', 1, 'POINT')}"></td> <td th:text="${ins.unidadMedida}"></td>
                                 <td th:text="${ins.proveedor?.razonSocial} ?: '-'"></td>
-                                <form th:action="@{/compra/requerimientos/agregarItem}" method="post" class="d-contents"> <td>
+                                <form th:action="@{/requerimientos/agregarItem}" method="post" class="d-contents"> <td>
                                         <input type="hidden" name="insumoId" th:value="${ins.idInsumo}" />
                                         <input type="hidden" name="proveedorId" th:value="${ins.proveedor?.idProv}" />
                                         <input type="number" step="0.01" name="cantidad" value="1" min="0.01" class="form-control form-control-sm" style="width: 80px;" required />
@@ -88,7 +88,7 @@
                                 <td th:text="${detalle.insumo?.unidadMedida}"></td>
                                 <td th:text="${detalle.proveedor?.razonSocial} ?: '-'"></td>
                                 <td>
-                                    <form th:action="@{/compra/requerimientos/eliminarItem}" method="post" class="d-inline">
+                                    <form th:action="@{/requerimientos/eliminarItem}" method="post" class="d-inline">
                                         <input type="hidden" name="index" th:value="${iterStat.index}" />
                                         <button type="submit" class="btn btn-sm btn-danger" title="Eliminar ítem">🗑️</button>
                                     </form>
@@ -99,7 +99,7 @@
                 </div>
 
                 <div class="text-end mt-3" th:if="${requerimientoActual != null and not #lists.isEmpty(requerimientoActual.detalles)}">
-                     <form th:action="@{/compra/requerimientos/guardar}" method="post">
+                     <form th:action="@{/requerimientos/guardar}" method="post">
                          <button type="submit" class="btn btn-success">📤 Generar y Guardar Requerimiento</button>
                      </form>
                 </div>
@@ -137,8 +137,8 @@
                                 </td>
                                <td>
                                  <div class="d-flex gap-1">
-                                    <a href="#" th:href="@{/compra/requerimientos/detalle/{id}(id=${req.id})}" class="btn btn-sm btn-outline-primary disabled" title="Ver Detalle">🔍</a> <form th:if="${#strings.equalsIgnoreCase(req.estado, 'PENDIENTE')}"
-                                          th:action="@{/compra/requerimientos/eliminar/{id}(id=${req.id})}" method="post" class="d-inline"
+                                    <a href="#" th:href="@{/requerimientos/detalle/{id}(id=${req.id})}" class="btn btn-sm btn-outline-primary disabled" title="Ver Detalle">🔍</a> <form th:if="${#strings.equalsIgnoreCase(req.estado, 'PENDIENTE')}"
+                                          th:action="@{/requerimientos/eliminar/{id}(id=${req.id})}" method="post" class="d-inline"
                                           th:data-codigo="${req.codigoRequerimiento}" onsubmit="return confirmarEliminacionRequerimiento(this);">
                                           <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar">🗑️</button>
                                     </form>
